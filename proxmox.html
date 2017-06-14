@@ -1,0 +1,31 @@
+<script type="text/javascript">
+RED.nodes.registerType('proxmox',{
+	category: 'infrastructure',
+	color: '#a6bbcf',
+	defaults: {
+		endpoint: {value:""},
+		server: {value:"", type:"proxmox-server"}
+	},
+	inputs:1,
+	outputs:1,
+	icon: "white-globe.png",
+	label: function() {
+		return this.name||"proxmox";
+	}
+});
+</script>
+
+<script type="text/x-red" data-template-name="proxmox">
+<div class="form-row">
+	<label for="node-input-server"><i class="icon-tag"></i> Proxmox Server</label>
+	<input type="text" id="node-input-server" placeholder="Server">
+</div>
+<div class="form-row">
+	<label for="node-input-endpoint"><i class="icon-tag"></i> Endpoint</label>
+	<input type="text" id="node-input-endpoint" placeholder="Endpoint">
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="proxmox">
+<p>A node to create an API call to proxmox</p>
+</script>

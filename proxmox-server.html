@@ -1,0 +1,34 @@
+<script type="text/javascript">
+RED.nodes.registerType('proxmox-server',{
+	category: 'config',
+	defaults: {
+		host: {value:"localhost",required:true},
+		port: {value:8006,required:true,validate:RED.validators.number()},
+		username: {value:"root@pam",required:true},
+		password: {value:"",required:true},
+	},
+	label: function() {
+		return this.username+"@"+this.host+":"+this.port;
+	}
+});
+</script>
+
+<script type="text/x-red" data-template-name="proxmox-server">
+<div class="form-row">
+	<label for="node-config-input-host"><i class="icon-bookmark"></i> Host</label>
+	<input type="text" id="node-config-input-host">
+</div>
+<div class="form-row">
+	<label for="node-config-input-port"><i class="icon-bookmark"></i> Port</label>
+	<input type="text" id="node-config-input-port">
+</div>
+<div class="form-row">
+	<label for="node-config-input-username"><i class="icon-user"></i> Username</label>
+	<input type="text" id="node-config-input-username">
+</div>
+<div class="form-row">
+	<label for="node-config-input-password"><i class="icon-key"></i> Password</label>
+	<input type="password" id="node-config-input-password">
+</div>
+</script>
+
