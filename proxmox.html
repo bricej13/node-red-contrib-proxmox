@@ -3,8 +3,10 @@ RED.nodes.registerType('proxmox',{
 	category: 'infrastructure',
 	color: '#a6bbcf',
 	defaults: {
+		name: {value:""},
 		endpoint: {value:""},
-		server: {value:"", type:"proxmox-server"}
+		server: {value:"", type:"proxmox-server"},
+		method: {value:"GET"}
 	},
 	inputs:1,
 	outputs:1,
@@ -21,8 +23,21 @@ RED.nodes.registerType('proxmox',{
 	<input type="text" id="node-input-server" placeholder="Server">
 </div>
 <div class="form-row">
+	<label for="node-input-name"><i class="icon-tag"></i> Name</label>
+	<input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row">
 	<label for="node-input-endpoint"><i class="icon-tag"></i> Endpoint</label>
 	<input type="text" id="node-input-endpoint" placeholder="Endpoint">
+</div>
+<div class="form-row">
+	<label for="node-input-method"><i class="fa fa-tasks"></i> Method</label>
+	<select type="text" id="node-input-method" style="width:70%;">
+		<option value="GET">GET</option>
+		<option value="POST">POST</option>
+		<option value="PUT">PUT</option>
+		<option value="DELETE">DELETE</option>
+	</select>
 </div>
 </script>
 
