@@ -8,8 +8,8 @@
 	<input type="text" id="node-input-name" placeholder="Name">
 </div>
 <div class="form-row">
-	<label for="node-input-endpoint"><i class="icon-tag"></i> Endpoint name</label>
-	<input type="text" id="node-input-endpoint" placeholder="Endpoint">
+	<label for="node-input-path"><i class="icon-tag"></i> Path</label>
+	<input type="text" id="node-input-path" placeholder="i.e. /version">
 </div>
 <div class="form-row">
 	<label for="node-input-method"><i class="fa fa-tasks"></i> Method</label>
@@ -28,13 +28,13 @@
 
 <script type="text/x-red" data-help-name="proxmox-api">
 <p>This is a node access the Proxmox API</p>
-<p>If no node name is set, this will retrieve a summary list of all the nodes.</p>
-
-<p>If a node name is set, a list of methods will be retrieved for the node</p>
-<p><code>msg.proxmox-node</code> value will be used for the node property if it is available.</p>
-
-<p>If a node method is set, detailed informamtion will be retrieved for that detail</p>
-<p><code>msg.proxmox-node-method</code> value will be used for the method property if it is available.</p>
+<p>Upon a trigger, this node will call the API path indicated. The results of the call will be set as the value of <code>msg.payload</code></p>
+<p>The folowing values can be set on the <code>msg</code> object and they will overwrite any manually entered settings:
+<ul>
+<li><code>msg.path</code>: The API path to query. List of available paths is available at the API documentation link below.</li>
+<li><code>msg.method</code>: A method from the following list: GET, POST, PUT, DELETE. PUT and POST require additional information to be passed in the payload</li>
+<li><code>msg.payload</code>: Body of the message to be sent on POST & PUT requests. See API docs for proper values. </li>
+</ul>
 
 <p>See the <a href="https://pve.proxmox.com/pve-docs/api-viewer/index.html">Proxmox API Documentation</a> for further details.</p>
 <p>Proxmox version 4.4</p>
@@ -46,7 +46,7 @@ RED.nodes.registerType('proxmox-api',{
 	color: '#a6bbcf',
 	defaults: {
 		name: {value:""},
-		endpoint: {value:""},
+		path: {value:""},
 		method: {value:""},
 		server: {value:"", type:"proxmox-server"},
 	},

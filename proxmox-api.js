@@ -4,7 +4,7 @@ module.exports = function(RED) {
 	function ProxmoxApiNode(config) {
 
 		RED.nodes.createNode(this,config);
-		this.endpoint = config.endpoint;
+		this.path = config.path;
 		this.method = config.method;
 		this.server = RED.nodes.getNode(config.server);
 		this.baseURL = 'https://' + this.server.host + ':' + this.server.port;
@@ -15,11 +15,11 @@ module.exports = function(RED) {
 			if (node.auth) {
 				var endpoint = "/api2/json";
 
-				if (node.endpoint || msg.endpoint) {
-					endpoint += "/" + (node.endpoint || msg.endpoint);
+				if (node.path || msg.path) {
+					endpoint += "/" + (msg.path || node.path);
 				}
 
-				var requestOptions = node.setupOptions(endpoint, (node.method || msg.method), msg);
+				var requestOptions = node.setupOptions(endpoint, (msg.method || node.method), msg);
 				node.callApi(requestOptions, msg, 5);
 			}
 		});
@@ -49,8 +49,8 @@ module.exports = function(RED) {
         }
 
         node.callApi = function(options, msg, ttl) {
-            node.log("Calling API with options:");
-            node.log(JSON.stringify(options));
+            // node.log("Calling API with options:");
+            // node.log(JSON.stringify(options));
 			request(options, function (error, response, body) {
 				if (response.statusCode === 200) {
 					msg.payload = response.body.data;
@@ -88,7 +88,7 @@ module.exports = function(RED) {
                     // Retry previous request if needed
                     if (typeof requestOptions !== 'undefined' && typeof msg !== 'undefined' && typeof ttl !== 'undefined') {
                         if (ttl > 0) {
-                            node.log("Re-authenticating to proxmox.");
+                            // node.log("Re-authenticating to proxmox.");
                             node.callApi(requestOptions, msg, ttl-1);
                         }
                     }
