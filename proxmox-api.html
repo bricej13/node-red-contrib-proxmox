@@ -1,0 +1,71 @@
+<script type="text/x-red" data-template-name="proxmox-api">
+<div class="form-row">
+	<label for="node-input-server"><i class="icon-tag"></i> Proxmox Server</label>
+	<input type="text" id="node-input-server" placeholder="Server">
+</div>
+<div class="form-row">
+	<label for="node-input-name"><i class="icon-tag"></i> Name</label>
+	<input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row">
+	<label for="node-input-endpoint"><i class="icon-tag"></i> Endpoint name</label>
+	<input type="text" id="node-input-endpoint" placeholder="Endpoint">
+</div>
+<div class="form-row">
+	<label for="node-input-method"><i class="fa fa-tasks"></i> Method</label>
+	<select type="text" id="node-input-method" style="width:70%;">
+		<option value="GET">GET</option>
+		<option value="POST">POST</option>
+		<option value="PUT">PUT</option>
+		<option value="DELETE">DELETE</option>
+	</select>
+</div>
+<div class="form-row node-input-payload-row hide">
+	<label for="node-input-payload"><i class="icon-tag"></i> Payload</label>
+	<textarea rows=5 style="width: 70%" id="node-input-payload" placeholder="JSON Payload"></textarea>
+</div>
+</script>
+
+<script type="text/x-red" data-help-name="proxmox-api">
+<p>This is a node access the Proxmox API</p>
+<p>If no node name is set, this will retrieve a summary list of all the nodes.</p>
+
+<p>If a node name is set, a list of methods will be retrieved for the node</p>
+<p><code>msg.proxmox-node</code> value will be used for the node property if it is available.</p>
+
+<p>If a node method is set, detailed informamtion will be retrieved for that detail</p>
+<p><code>msg.proxmox-node-method</code> value will be used for the method property if it is available.</p>
+
+<p>See the <a href="https://pve.proxmox.com/pve-docs/api-viewer/index.html">Proxmox API Documentation</a> for further details.</p>
+<p>Proxmox version 4.4</p>
+</script>
+
+<script type="text/javascript">
+RED.nodes.registerType('proxmox-api',{
+	category: 'proxmox',
+	color: '#a6bbcf',
+	defaults: {
+		name: {value:""},
+		endpoint: {value:""},
+		method: {value:""},
+		server: {value:"", type:"proxmox-server"},
+	},
+	inputs:1,
+	outputs:1,
+	icon: "white-globe.png",
+	label: function() {
+		return this.name||"proxmox-api";
+	},
+	oneditprepare: function() {
+		
+			$("#node-input-method").change(function() {
+                if (["PUT", "POST"].includes($(this).val())) {
+                    $(".node-input-payload-row").show();
+                } else {
+                    $(".node-input-payload-row").hide();
+                    $('#node-input-payload').val('');
+                }
+            });
+	}
+});
+</script>
