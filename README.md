@@ -22,4 +22,4 @@ Tested with Proxmox version 4.4
 - [x] Add a README.md
 - [ ] Update configuration to use `credentials` for username/password
 - [x] Package for NPM
-- [ ] Move to GitHub
+- [x] Move to GitHub
