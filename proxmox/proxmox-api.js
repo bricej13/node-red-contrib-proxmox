@@ -6,6 +6,7 @@ module.exports = function(RED) {
 		RED.nodes.createNode(this,config);
 		this.path = config.path;
 		this.method = config.method;
+		this.payload = config.payload;
 		this.server = RED.nodes.getNode(config.server);
 		this.baseURL = 'https://' + this.server.host + ':' + this.server.port;
 		this.jar = request.jar();
@@ -29,21 +30,35 @@ module.exports = function(RED) {
 				url: node.baseURL + endpoint,
 				strictSSL: false,
 				json: true,
-				jar: node.jar
+				jar: node.jar,
 			};
 
-            if (msg.payload || node.payload) {
-                if (typeof msg.payload === 'object') {
-                    options.body = msg.payload;
-                }
-                else {
-                    try {
-                        var payloadObject = JSON.parse(node.payload);
-                        options.body = payloadObject;
-                    } catch (e) {
+            // Add payload & headers for write operations
+            if (["PUT", "POST", "DELETE"].includes(method)) {
+
+                if (msg.payload || node.payload) {
+                    if (typeof msg.payload === 'object') {
+                        options.form = msg.payload;
+                    }
+                    else if (node.payload !== ""){
+                        try {
+                            var payloadObject = JSON.parse(node.payload);
+                            options.form = payloadObject;
+                        } catch (e) {
+                            node.error("Error parsing JSON payload:")
+                            node.error(node.payload);
+                        }
                     }
                 }
+
+                options.headers = {
+                    'CSRFPreventionToken': node.auth.CSRFPreventionToken,
+                    'cache-control': 'no-cache', 
+                    'content-type': 'application/x-www-form-urlencoded'
+                }
             }
+
+            // node.log(JSON.stringify(options));
 
             return options;
         }
@@ -84,6 +99,8 @@ module.exports = function(RED) {
 					var cookie = request.cookie("PVEAuthCookie=" + response.body.data.ticket);
 					node.jar.setCookie(cookie, node.baseURL);
 					node.auth = response.body.data;
+
+                    // node.log(JSON.stringify(node.auth));
 
                     // Retry previous request if needed
                     if (typeof requestOptions !== 'undefined' && typeof msg !== 'undefined' && typeof ttl !== 'undefined') {

@@ -23,3 +23,4 @@ Tested with Proxmox version 4.4
 - [ ] Update configuration to use `credentials` for username/password
 - [x] Package for NPM
 - [x] Move to GitHub
+- [x] Add support for POST, PUT, and DELETE operations

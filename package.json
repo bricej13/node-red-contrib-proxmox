@@ -6,7 +6,7 @@
         "request": ">=2.31.0"
     },
     "keywords": [ "node-red" ],
-    "repository": { "type": "git", "url", "https://github.com/bricej13/node-red-contrib-proxmox.git" },
+    "repository": { "type": "git", "url": "https://github.com/bricej13/node-red-contrib-proxmox.git" },
     "license": "MIT" ,
     "node-red"     : {
         "nodes": {
