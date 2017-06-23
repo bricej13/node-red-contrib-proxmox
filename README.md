@@ -21,4 +21,5 @@ Tested with Proxmox version 4.4
 ## TODO:
 - [x] Add a README.md
 - [ ] Update configuration to use `credentials` for username/password
-- [ ] Package for NPM
+- [x] Package for NPM
+- [ ] Move to GitHub

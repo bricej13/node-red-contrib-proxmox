@@ -6,6 +6,7 @@
         "request": ">=2.31.0"
     },
     "keywords": [ "node-red" ],
+    "license": "MIT" ,
     "node-red"     : {
         "nodes": {
             "proxmox-api": "proxmox/proxmox-api.js",
