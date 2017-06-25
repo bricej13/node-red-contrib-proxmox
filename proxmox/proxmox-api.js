@@ -22,7 +22,7 @@ module.exports = function(RED) {
 				}
 
 				var requestOptions = node.setupOptions(endpoint, (msg.method || node.method), msg);
-				node.callApi(requestOptions, msg);
+				node.callApi(requestOptions, msg, 3);
 			}
 		});
 
@@ -68,7 +68,8 @@ module.exports = function(RED) {
             return options;
         }
 
-        node.callApi = function(options, msg) {
+        node.callApi = function(options, msg, ttl) {
+            if (ttl <= 0) return;
             // node.log("Calling API with options:");
             // node.log(JSON.stringify(options));
 			request(options, function (error, response, body) {
@@ -76,7 +77,9 @@ module.exports = function(RED) {
 					msg.payload = response.body.data;
 					node.send(msg);
 				} else if (response.statusCode === 401) {
-                    // node.authenticate(options, msg, ttl);
+                    node.server.authenticate().then(function(body) {
+                        node.callApi(options, msg, ttl-1);
+                    });
 				} else {
 					node.error(JSON.stringify(response), msg);
 				}
