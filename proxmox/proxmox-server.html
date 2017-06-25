@@ -10,7 +10,7 @@ RED.nodes.registerType('proxmox-server',{
         password: {type:"password"}
     },
 	label: function() {
-		return this.credentials.username+"@"+this.host+":"+this.port;
+		return this.host+":"+this.port;
 	}
 });
 </script>

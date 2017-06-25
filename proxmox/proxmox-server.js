@@ -1,5 +1,5 @@
 module.exports = function(RED) {
-	var request = require("request");
+	var rp = require("request-promise");
 
 	function ProxmoxServerNode(n) {
 		RED.nodes.createNode(this,n);
@@ -33,45 +33,48 @@ module.exports = function(RED) {
         }
 
 		this.authenticate = function() {
-			var options = { method: 'POST',
-				url: this.baseURL + '/api2/json/access/ticket',
-				strictSSL: false,
-				json: true,
-				headers: { 'cache-control': 'no-cache', 'content-type': 'application/x-www-form-urlencoded' },
-				form: { 
-					username: this.username,
-					password: this.password
-				} 
-			};
 
-			request(options, function (error, response, body) {
-				if (response.statusCode === 200) {
+            var options = { method: 'POST',
+                url: this.baseURL + '/api2/json/access/ticket',
+                strictSSL: false,
+                json: true,
+                headers: { 'cache-control': 'no-cache', 'content-type': 'application/x-www-form-urlencoded' },
+                form: { 
+                    username: this.username,
+                    password: this.password
+                } 
+            };
+
+            return rp(options)
+                .then(function (body) {
                     for (var id in self.childNodes) {
                         if (self.childNodes.hasOwnProperty(id)) {
                             self.childNodes[id].status({fill:"green",shape:"dot",text:"node-red:common.status.connected"});
                         }
                     }
 
-                    self.auth = response.body.data
-					self.log("Successfully connected to Proxmox: " + self.username + "@" + self.host + ":" + self.port);
+                    self.auth = body.data
+                    self.log("Successfully connected to Proxmox: " + self.username + "@" + self.host + ":" + self.port);
 
                     self.isConnected = true;
 
-				} else if (response.statusCode === 401) {
-                } else {
-					delete self.auth;
+                }).catch(function(error) {
+                    self.isConnected = false;
+                    delete self.auth;
+
                     for (var id in self.childNodes) {
                         if (self.childNodes.hasOwnProperty(id)) {
                             self.childNodes[id].status( {fill:"red",shape:"ring",text:"authentication failed"});
                         }
                     }
-					self.error("Failed to connect to Proxmox", error, JSON.stringify(response));
-					self.error(error);
-					self.error(JSON.stringify(response));
-				}
-                this.isConnecting = false;
-			});
 
+                    self.error("Failed to connect to Proxmox");
+                    self.error(error);
+                    self.error(JSON.stringify(response));
+
+                }).finally(function() {
+                    this.isConnecting = false;
+                });
 		}
 	}
 	RED.nodes.registerType("proxmox-server",ProxmoxServerNode, {

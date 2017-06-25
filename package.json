@@ -3,7 +3,8 @@
     "version"      : "0.0.1",
     "description"  : "A Proxmox node for node-red",
     "dependencies": {
-        "request": ">=2.31.0"
+        "request": ">=2.31.0",
+        "request-promise": ">=2.0.0"
     },
     "keywords": [ "node-red" ],
     "repository": { "type": "git", "url": "https://github.com/bricej13/node-red-contrib-proxmox.git" },
