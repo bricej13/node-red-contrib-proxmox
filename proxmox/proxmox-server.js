@@ -6,8 +6,11 @@ module.exports = function(RED) {
         var self = this;
 		this.host = n.host;
 		this.port = n.port;
-		this.username = n.username;
-		this.password = n.password;
+
+        if (this.credentials) {
+            this.username = this.credentials.username;
+            this.password = this.credentials.password;
+        }
 
 		this.baseURL = 'https://' + this.host + ':' + this.port;
         this.isConnected = false;
@@ -50,7 +53,7 @@ module.exports = function(RED) {
                     }
 
                     self.auth = response.body.data
-					self.log("Successfully connected to Proxmox");
+					self.log("Successfully connected to Proxmox: " + self.username + "@" + self.host + ":" + self.port);
 
                     self.isConnected = true;
 
@@ -71,5 +74,10 @@ module.exports = function(RED) {
 
 		}
 	}
-	RED.nodes.registerType("proxmox-server",ProxmoxServerNode);
+	RED.nodes.registerType("proxmox-server",ProxmoxServerNode, {
+        credentials: {
+            username: {type:"text"},
+            password: {type:"password"}
+        }
+    });
 }

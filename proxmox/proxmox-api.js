@@ -22,7 +22,7 @@ module.exports = function(RED) {
 				}
 
 				var requestOptions = node.setupOptions(endpoint, (msg.method || node.method), msg);
-				node.callApi(requestOptions, msg, 5);
+				node.callApi(requestOptions, msg);
 			}
 		});
 
@@ -68,7 +68,7 @@ module.exports = function(RED) {
             return options;
         }
 
-        node.callApi = function(options, msg, ttl) {
+        node.callApi = function(options, msg) {
             // node.log("Calling API with options:");
             // node.log(JSON.stringify(options));
 			request(options, function (error, response, body) {
@@ -78,59 +78,12 @@ module.exports = function(RED) {
 				} else if (response.statusCode === 401) {
                     // node.authenticate(options, msg, ttl);
 				} else {
-					node.error(error);
-					node.error(JSON.stringify(response));
-					node.error(JSON.stringify(body));
+					node.error(JSON.stringify(response), msg);
 				}
 			});
 		}
 
-        /*
-		node.authenticate = function(requestOptions, msg, ttl) {
-			var options = { method: 'POST',
-				url: node.server.baseURL + '/api2/json/access/ticket',
-				strictSSL: false,
-				json: true,
-				headers: { 'cache-control': 'no-cache', 'content-type': 'application/x-www-form-urlencoded' },
-				form: { 
-					username: node.server.username,
-					password: node.server.password
-				} 
-			};
-
-			request(options, function (error, response, body) {
-				if (response.statusCode === 200) {
-					node.status({fill:"green",shape:"dot",text:"authenticated"});
-					node.log("Successfully connected to Proxmox");
-					var cookie = request.cookie("PVEAuthCookie=" + response.body.data.ticket);
-					node.jar.setCookie(cookie, node.server.baseURL);
-					node.auth = response.body.data;
-
-                    // node.log(JSON.stringify(node.auth));
-
-                    // Retry previous request if needed
-                    if (typeof requestOptions !== 'undefined' && typeof msg !== 'undefined' && typeof ttl !== 'undefined') {
-                        if (ttl > 0) {
-                            // node.log("Re-authenticating to proxmox.");
-                            node.callApi(requestOptions, msg, ttl-1);
-                        }
-                    }
-				} else if (response.statusCode === 401) {
-                } else {
-					delete node.auth;
-					node.status({fill:"red",shape:"ring",text:"authentication failed"});
-					node.error("Failed to connect to Proxmox", error, JSON.stringify(response));
-					node.error(error);
-					node.error(JSON.stringify(response));
-				}
-			});
-
-		}
-        */
 		node.status({fill:"orange",shape:"ring",text:"unauthenticated"});
-
-
-		// node.authenticate();
 
 	}
 	RED.nodes.registerType("proxmox-api",ProxmoxApiNode);
