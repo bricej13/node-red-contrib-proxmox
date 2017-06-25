@@ -15,12 +15,3 @@ The folowing values can be set on the `msg` object and they will overwrite any m
 See the [Proxmox API Documentation](https://pve.proxmox.com/pve-docs/api-viewer/index.html) for further details.
 
 Tested with Proxmox version 4.4
-
-
-
-## TODO:
-- [x] Add a README.md
-- [ ] Update configuration to use `credentials` for username/password
-- [x] Package for NPM
-- [x] Move to GitHub
-- [x] Add support for POST, PUT, and DELETE operations
